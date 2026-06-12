@@ -1,0 +1,457 @@
+--
+-- PostgreSQL database dump
+--
+
+\restrict 1Lzd5lfeGDjQaU8UihTVdibuMMMjvQmDlxjkvFfhfuzJbgVb7XPRadPVX8d9dcX
+
+-- Dumped from database version 15.17 (Homebrew)
+-- Dumped by pg_dump version 18.2
+
+-- Started on 2026-06-12 18:17:40 IST
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET transaction_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET xmloption = content;
+SET client_min_messages = warning;
+SET row_security = off;
+
+SET default_tablespace = '';
+
+SET default_table_access_method = heap;
+
+--
+-- TOC entry 218 (class 1259 OID 26372)
+-- Name: AIInsight; Type: TABLE; Schema: public; Owner: abdul
+--
+
+CREATE TABLE public."AIInsight" (
+    id text NOT NULL,
+    "prId" text NOT NULL,
+    summary text NOT NULL,
+    "riskFlags" text[],
+    model text DEFAULT 'gpt-4o'::text NOT NULL,
+    "promptTokens" integer,
+    "outputTokens" integer,
+    "generatedAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
+);
+
+
+ALTER TABLE public."AIInsight" OWNER TO abdul;
+
+--
+-- TOC entry 217 (class 1259 OID 26362)
+-- Name: Engineer; Type: TABLE; Schema: public; Owner: abdul
+--
+
+CREATE TABLE public."Engineer" (
+    id text NOT NULL,
+    login text NOT NULL,
+    name text,
+    "avatarUrl" text,
+    "totalPRs" integer DEFAULT 0 NOT NULL,
+    "mergedPRs" integer DEFAULT 0 NOT NULL,
+    "totalReviews" integer DEFAULT 0 NOT NULL,
+    "avgCycleTimeHours" double precision,
+    "avgRiskScore" double precision,
+    "reviewParticipation" double precision,
+    "updatedAt" timestamp(3) without time zone NOT NULL
+);
+
+
+ALTER TABLE public."Engineer" OWNER TO abdul;
+
+--
+-- TOC entry 215 (class 1259 OID 26343)
+-- Name: PRMetrics; Type: TABLE; Schema: public; Owner: abdul
+--
+
+CREATE TABLE public."PRMetrics" (
+    id text NOT NULL,
+    "prId" text NOT NULL,
+    "cycleTimeHours" double precision,
+    "reviewTimeHours" double precision,
+    "timeToFirstReview" double precision,
+    "reviewCount" integer DEFAULT 0 NOT NULL,
+    "approvalCount" integer DEFAULT 0 NOT NULL,
+    "commentCount" integer DEFAULT 0 NOT NULL,
+    "riskScore" double precision,
+    "hasTestChanges" boolean DEFAULT false NOT NULL,
+    "computedAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
+);
+
+
+ALTER TABLE public."PRMetrics" OWNER TO abdul;
+
+--
+-- TOC entry 216 (class 1259 OID 26355)
+-- Name: PRReview; Type: TABLE; Schema: public; Owner: abdul
+--
+
+CREATE TABLE public."PRReview" (
+    id text NOT NULL,
+    "prId" text NOT NULL,
+    "externalId" bigint NOT NULL,
+    "reviewerLogin" text NOT NULL,
+    state text NOT NULL,
+    body text,
+    "submittedAt" timestamp(3) without time zone NOT NULL
+);
+
+
+ALTER TABLE public."PRReview" OWNER TO abdul;
+
+--
+-- TOC entry 214 (class 1259 OID 26330)
+-- Name: PullRequest; Type: TABLE; Schema: public; Owner: abdul
+--
+
+CREATE TABLE public."PullRequest" (
+    id text NOT NULL,
+    "externalId" integer NOT NULL,
+    "repoFullName" text NOT NULL,
+    title text NOT NULL,
+    body text,
+    "authorLogin" text NOT NULL,
+    state text NOT NULL,
+    "isDraft" boolean DEFAULT false NOT NULL,
+    "baseBranch" text NOT NULL,
+    "headBranch" text NOT NULL,
+    additions integer DEFAULT 0 NOT NULL,
+    deletions integer DEFAULT 0 NOT NULL,
+    "changedFiles" integer DEFAULT 0 NOT NULL,
+    commits integer DEFAULT 0 NOT NULL,
+    "htmlUrl" text NOT NULL,
+    "createdAt" timestamp(3) without time zone NOT NULL,
+    "updatedAt" timestamp(3) without time zone NOT NULL,
+    "mergedAt" timestamp(3) without time zone,
+    "closedAt" timestamp(3) without time zone,
+    "syncedAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
+);
+
+
+ALTER TABLE public."PullRequest" OWNER TO abdul;
+
+--
+-- TOC entry 219 (class 1259 OID 26381)
+-- Name: SyncLog; Type: TABLE; Schema: public; Owner: abdul
+--
+
+CREATE TABLE public."SyncLog" (
+    id text NOT NULL,
+    "repoFullName" text NOT NULL,
+    "syncType" text NOT NULL,
+    status text NOT NULL,
+    "prsSynced" integer DEFAULT 0 NOT NULL,
+    error text,
+    "startedAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "completedAt" timestamp(3) without time zone
+);
+
+
+ALTER TABLE public."SyncLog" OWNER TO abdul;
+
+--
+-- TOC entry 3876 (class 0 OID 26372)
+-- Dependencies: 218
+-- Data for Name: AIInsight; Type: TABLE DATA; Schema: public; Owner: abdul
+--
+
+COPY public."AIInsight" (id, "prId", summary, "riskFlags", model, "promptTokens", "outputTokens", "generatedAt") FROM stdin;
+cmqardgqh000374k0heaua65s	cmqaqy2hv0004rrk0ut00aalv	This PR adds an npm start command to the server instructions in the README.	{"single reviewer","no approvals"}	gpt-4o	232	35	2026-06-12 10:03:34.844
+cmqarz23g000u74k00vzd10yx	cmqartqhg000o74k0ykqmg3sf	This PR updates the README with example token values.	{"no approvals","touches auth"}	gpt-4o	308	31	2026-06-12 10:19:57.916
+cmqau6a3300278lk0h0003mfh	cmqatilre001x74k00m8979u1	This PR adds a new test file with no content.	{"no approvals"}	gpt-4o	195	27	2026-06-12 11:21:34.095
+cmqaugku8000mvjk0briidtr8	cmqauef0w0009vjk0ncazbr3e	The PR updates API tokens and URLs in the config.json file for Centra integration.	{"no approvals","touches auth"}	gpt-4o	343	38	2026-06-12 11:29:34.592
+\.
+
+
+--
+-- TOC entry 3875 (class 0 OID 26362)
+-- Dependencies: 217
+-- Data for Name: Engineer; Type: TABLE DATA; Schema: public; Owner: abdul
+--
+
+COPY public."Engineer" (id, login, name, "avatarUrl", "totalPRs", "mergedPRs", "totalReviews", "avgCycleTimeHours", "avgRiskScore", "reviewParticipation", "updatedAt") FROM stdin;
+cmqartqhw000q74k0c9h9iqwn	bookingbotdhd	\N	\N	1	1	0	0.06861111111111111	0.6015999999999999	0	2026-06-12 10:19:57.936
+cmqatilrw001z74k08rov1mfs	Bunny5252	\N	\N	1	0	0	\N	0.0004	0	2026-06-12 11:21:34.111
+cmqardgrr000474k02791dcrv	abdulpara5252	\N	\N	5	1	5	0.13111111111111112	0.4816	71.42857142857143	2026-06-12 11:29:34.627
+\.
+
+
+--
+-- TOC entry 3873 (class 0 OID 26343)
+-- Dependencies: 215
+-- Data for Name: PRMetrics; Type: TABLE DATA; Schema: public; Owner: abdul
+--
+
+COPY public."PRMetrics" (id, "prId", "cycleTimeHours", "reviewTimeHours", "timeToFirstReview", "reviewCount", "approvalCount", "commentCount", "riskScore", "hasTestChanges", "computedAt") FROM stdin;
+cmqardslp000c74k0rfzd1c0y	cmqar7glh0001fnk0z1ob8479	\N	\N	\N	0	0	0	0.6008	f	2026-06-12 10:03:25.837
+cmqardeup000274k0je3wlqst	cmqaqy2hv0004rrk0ut00aalv	0.13111111111111112	\N	\N	0	0	0	0.6012	f	2026-06-12 10:03:33.24
+cmqarh7nd000l74k0janw1cuk	cmqarh7n7000k74k0q4u9ojiz	\N	\N	\N	0	0	0	0.6024	f	2026-06-12 10:06:05.305
+cmqartqhi000p74k07tvqv3mx	cmqartqhg000o74k0ykqmg3sf	0.06861111111111111	\N	\N	0	0	0	0.6015999999999999	f	2026-06-12 10:19:55.765
+cmqatilri001y74k0usngvcsu	cmqatilre001x74k00m8979u1	\N	0.058611111111111114	0.058611111111111114	4	0	2	0.0004	t	2026-06-12 11:21:31.951
+cmqauall90002vjk07wr914nh	cmqauall00001vjk097eg0t3y	\N	\N	\N	0	0	0	0.30119999999999997	t	2026-06-12 11:25:22.017
+cmqauef0z000avjk0sjb27sw2	cmqauef0w0009vjk0ncazbr3e	\N	0.01611111111111111	0.01611111111111111	2	0	2	0.3024	f	2026-06-12 11:29:32.423
+\.
+
+
+--
+-- TOC entry 3874 (class 0 OID 26355)
+-- Dependencies: 216
+-- Data for Name: PRReview; Type: TABLE DATA; Schema: public; Owner: abdul
+--
+
+COPY public."PRReview" (id, "prId", "externalId", "reviewerLogin", state, body, "submittedAt") FROM stdin;
+cmqau68f600228lk0bwh43m8z	cmqatilre001x74k00m8979u1	4485052892	abdulpara5252	COMMENTED		2026-06-12 11:06:37
+cmqau68f600248lk0vymrmxqi	cmqatilre001x74k00m8979u1	4485106092	abdulpara5252	CHANGES_REQUESTED	fsfsdfdsfdsfsdfsdfsdfdsf	2026-06-12 11:12:20
+cmqau68f600238lk08snokquc	cmqatilre001x74k00m8979u1	4485083237	abdulpara5252	COMMENTED	dsfdsfdsfd	2026-06-12 11:09:21
+cmqau68f600258lk065i5846i	cmqatilre001x74k00m8979u1	4485141968	abdulpara5252	CHANGES_REQUESTED	asdasdasdsa	2026-06-12 11:16:46
+cmqaufmx0000evjk0a9b44n31	cmqauef0w0009vjk0ncazbr3e	4485239077	abdulpara5252	COMMENTED	api key not directly push	2026-06-12 11:28:48
+cmqaugj5o000kvjk0pdt91z24	cmqauef0w0009vjk0ncazbr3e	4485244083	chatgpt-codex-connector[bot]	COMMENTED	\n### 💡 Codex Review\n\nHere are some automated review suggestions for this pull request.\n\n**Reviewed commit:** `3e7c8f3f0c`\n    \n\n<details> <summary>ℹ️ About Codex in GitHub</summary>\n<br/>\n\n[Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you\n- Open a pull request for review\n- Mark a draft as ready\n- Comment "@codex review".\n\nIf Codex has suggestions, it will comment; otherwise it will react with 👍.\n\n\n\n\nCodex can also answer questions or update the PR. Try commenting "@codex address that feedback".\n            \n</details>	2026-06-12 11:29:28
+\.
+
+
+--
+-- TOC entry 3872 (class 0 OID 26330)
+-- Dependencies: 214
+-- Data for Name: PullRequest; Type: TABLE DATA; Schema: public; Owner: abdul
+--
+
+COPY public."PullRequest" (id, "externalId", "repoFullName", title, body, "authorLogin", state, "isDraft", "baseBranch", "headBranch", additions, deletions, "changedFiles", commits, "htmlUrl", "createdAt", "updatedAt", "mergedAt", "closedAt", "syncedAt") FROM stdin;
+cmqarh7n7000k74k0q4u9ojiz	4	abdulpara5252/pr-reviewer	Update API keys in README	Updated example API keys in README.md.	abdulpara5252	open	f	master	abdulpara5252-patch-3	1	1	1	3	https://github.com/abdulpara5252/pr-reviewer/pull/4	2026-06-12 10:06:01	2026-06-12 10:28:31	\N	\N	2026-06-12 10:31:12.528
+cmqar7glh0001fnk0z1ob8479	3	abdulpara5252/pr-reviewer	update about	\N	abdulpara5252	open	f	master	abdulpara5252-patch-2	1	1	1	1	https://github.com/abdulpara5252/pr-reviewer/pull/3	2026-06-12 09:58:27	2026-06-12 09:58:27	\N	\N	2026-06-12 10:03:25.832
+cmqaqy2hv0004rrk0ut00aalv	2	abdulpara5252/pr-reviewer	Add npm start command to server instructions	\N	abdulpara5252	merged	f	master	abdulpara5252-patch-1	2	1	1	1	https://github.com/abdulpara5252/pr-reviewer/pull/2	2026-06-12 09:51:09	2026-06-12 09:59:02	2026-06-12 09:59:01	2026-06-12 09:59:01	2026-06-12 10:03:33.238
+cmqartqhg000o74k0ykqmg3sf	5	abdulpara5252/pr-reviewer	Update README with new token values	Updated example values for GITHUB_TOKEN and NOTION_API_KEY in README.	bookingbotdhd	merged	f	master	patch-1	2	2	1	1	https://github.com/abdulpara5252/pr-reviewer/pull/5	2026-06-12 10:15:46	2026-06-12 10:19:53	2026-06-12 10:19:53	2026-06-12 10:19:53	2026-06-12 10:19:55.755
+cmqatilre001x74k00m8979u1	6	abdulpara5252/pr-reviewer	Create test	\N	Bunny5252	open	f	master	patch-1	1	0	1	1	https://github.com/abdulpara5252/pr-reviewer/pull/6	2026-06-12 11:03:06	2026-06-12 11:19:02	\N	\N	2026-06-12 11:21:31.933
+cmqauall00001vjk097eg0t3y	7	abdulpara5252/pr-reviewer	Abdulpara5252 patch 4	\N	abdulpara5252	closed	f	master	abdulpara5252-patch-4	2	1	2	4	https://github.com/abdulpara5252/pr-reviewer/pull/7	2026-06-12 11:24:52	2026-06-12 11:25:19	\N	2026-06-12 11:25:19	2026-06-12 11:25:22.011
+cmqauef0w0009vjk0ncazbr3e	8	abdulpara5252/pr-reviewer	Modify Centra API tokens and URLs in config.json	Updated API tokens and URLs for Centra DTC and Integration.	abdulpara5252	open	f	master	abdulpara5252-patch-5	6	0	1	1	https://github.com/abdulpara5252/pr-reviewer/pull/8	2026-06-12 11:27:50	2026-06-12 11:29:29	\N	\N	2026-06-12 11:29:32.405
+\.
+
+
+--
+-- TOC entry 3877 (class 0 OID 26381)
+-- Dependencies: 219
+-- Data for Name: SyncLog; Type: TABLE DATA; Schema: public; Owner: abdul
+--
+
+COPY public."SyncLog" (id, "repoFullName", "syncType", status, "prsSynced", error, "startedAt", "completedAt") FROM stdin;
+cmqam7uuv0000rrk0ku7t4e2l	abdulpara5252/abeyprotfolio	webhook	failed	0	Not Found - https://docs.github.com/rest/pulls/pulls#get-a-pull-request	2026-06-12 07:38:50.743	2026-06-12 07:38:51.399
+cmqam7z9r0001rrk0tqcpwixd	abdulpara5252/abeyprotfolio	webhook	failed	0	Not Found - https://docs.github.com/rest/pulls/pulls#get-a-pull-request	2026-06-12 07:38:56.463	2026-06-12 07:38:56.976
+cmqam87gh0002rrk05d1du9f8	abdulpara5252/abeyprotfolio	webhook	failed	0	Not Found - https://docs.github.com/rest/pulls/reviews#list-reviews-for-a-pull-request	2026-06-12 07:39:07.073	2026-06-12 07:39:07.664
+cmqaqy20d0003rrk0dkpfuvvn	abdulpara5252/pr-reviewer	webhook	failed	0	String.prototype.matchAll called with a non-global RegExp argument	2026-06-12 09:51:11.533	2026-06-12 09:51:12.173
+cmqaqy6fi0005rrk0hr8imrff	abdulpara5252/pr-reviewer	webhook	failed	0	String.prototype.matchAll called with a non-global RegExp argument	2026-06-12 09:51:17.262	2026-06-12 09:51:17.944
+cmqaqyepl0007rrk09yfv0tn0	abdulpara5252/pr-reviewer	webhook	failed	0	String.prototype.matchAll called with a non-global RegExp argument	2026-06-12 09:51:27.993	2026-06-12 09:51:28.645
+cmqar7g3w0000fnk0s739azqm	abdulpara5252/pr-reviewer	webhook	failed	0	String.prototype.matchAll called with a non-global RegExp argument	2026-06-12 09:58:29.708	2026-06-12 09:58:30.345
+cmqar7khv0002fnk0ob0clya7	abdulpara5252/pr-reviewer	webhook	failed	0	String.prototype.matchAll called with a non-global RegExp argument	2026-06-12 09:58:35.395	2026-06-12 09:58:36.046
+cmqar7srr0004fnk0nywy459k	abdulpara5252/pr-reviewer	webhook	failed	0	String.prototype.matchAll called with a non-global RegExp argument	2026-06-12 09:58:46.119	2026-06-12 09:58:46.766
+cmqar86fk0006fnk0gib2eudg	abdulpara5252/pr-reviewer	webhook	failed	0	String.prototype.matchAll called with a non-global RegExp argument	2026-06-12 09:59:03.824	2026-06-12 09:59:04.531
+cmqar8av80008fnk07t1oqrke	abdulpara5252/pr-reviewer	webhook	failed	0	String.prototype.matchAll called with a non-global RegExp argument	2026-06-12 09:59:09.572	2026-06-12 09:59:10.125
+cmqar8j1w000afnk0kl82gu1a	abdulpara5252/pr-reviewer	webhook	failed	0	String.prototype.matchAll called with a non-global RegExp argument	2026-06-12 09:59:20.18	2026-06-12 09:59:20.858
+cmqarde7u000074k0bs57c0h3	abdulpara5252/pr-reviewer	webhook	success	1	\N	2026-06-12 10:03:07.194	2026-06-12 10:03:10.506
+cmqardk7a000574k0ylxta9uy	abdulpara5252/pr-reviewer	webhook	success	1	\N	2026-06-12 10:03:14.95	2026-06-12 10:03:17.04
+cmqards3g000a74k0loxymhxl	abdulpara5252/pr-reviewer	webhook	success	1	\N	2026-06-12 10:03:25.18	2026-06-12 10:03:25.842
+cmqardxs6000e74k093a7ti4r	abdulpara5252/pr-reviewer	webhook	success	1	\N	2026-06-12 10:03:32.55	2026-06-12 10:03:34.857
+cmqarh6xn000j74k03dt7j88z	abdulpara5252/pr-reviewer	webhook	success	1	\N	2026-06-12 10:06:04.379	2026-06-12 10:06:05.325
+cmqartpzs000n74k0tsw5qgsf	abdulpara5252/pr-reviewer	webhook	success	1	\N	2026-06-12 10:15:48.952	2026-06-12 10:15:49.606
+cmqaryzt1000r74k0pb3j6rii	abdulpara5252/pr-reviewer	webhook	success	1	\N	2026-06-12 10:19:54.949	2026-06-12 10:19:57.938
+cmqas6xau000w74k0olc2hdey	abdulpara5252/pr-reviewer	webhook	failed	0	\nInvalid `this.prisma.pRReview.upsert()` invocation in\n/Users/amici/www/Demo/pr-intelligence/pr-intelligence-backend/src/pr/pr.processor.ts:109:34\n\n  106 githubReviews\n  107   .filter((review) => review.user !== null && review.submitted_at !== null)\n  108   .map((review) =>\n→ 109     this.prisma.pRReview.upsert(\nValue out of range for the type: value "4484571189" is out of range for type integer	2026-06-12 10:26:04.951	2026-06-12 10:26:05.7
+cmqas71r2000z74k0j60r7yhv	abdulpara5252/pr-reviewer	webhook	failed	0	\nInvalid `this.prisma.pRReview.upsert()` invocation in\n/Users/amici/www/Demo/pr-intelligence/pr-intelligence-backend/src/pr/pr.processor.ts:109:34\n\n  106 githubReviews\n  107   .filter((review) => review.user !== null && review.submitted_at !== null)\n  108   .map((review) =>\n→ 109     this.prisma.pRReview.upsert(\nValue out of range for the type: value "4484571189" is out of range for type integer	2026-06-12 10:26:10.718	2026-06-12 10:26:11.476
+cmqas7a3i001274k0jljrmc7n	abdulpara5252/pr-reviewer	webhook	failed	0	\nInvalid `this.prisma.pRReview.upsert()` invocation in\n/Users/amici/www/Demo/pr-intelligence/pr-intelligence-backend/src/pr/pr.processor.ts:109:34\n\n  106 githubReviews\n  107   .filter((review) => review.user !== null && review.submitted_at !== null)\n  108   .map((review) =>\n→ 109     this.prisma.pRReview.upsert(\nValue out of range for the type: value "4484571189" is out of range for type integer	2026-06-12 10:26:21.534	2026-06-12 10:26:22.204
+cmqasa3pg001574k03zi2oasu	abdulpara5252/pr-reviewer	webhook	failed	0	\nInvalid `this.prisma.pRReview.upsert()` invocation in\n/Users/amici/www/Demo/pr-intelligence/pr-intelligence-backend/src/pr/pr.processor.ts:109:34\n\n  106 githubReviews\n  107   .filter((review) => review.user !== null && review.submitted_at !== null)\n  108   .map((review) =>\n→ 109     this.prisma.pRReview.upsert(\nValue out of range for the type: value "4484571189" is out of range for type integer	2026-06-12 10:28:33.22	2026-06-12 10:28:33.922
+cmqasa85t001874k0bxp81ceq	abdulpara5252/pr-reviewer	webhook	failed	0	\nInvalid `this.prisma.pRReview.upsert()` invocation in\n/Users/amici/www/Demo/pr-intelligence/pr-intelligence-backend/src/pr/pr.processor.ts:109:34\n\n  106 githubReviews\n  107   .filter((review) => review.user !== null && review.submitted_at !== null)\n  108   .map((review) =>\n→ 109     this.prisma.pRReview.upsert(\nValue out of range for the type: value "4484571189" is out of range for type integer	2026-06-12 10:28:38.993	2026-06-12 10:28:39.652
+cmqasagfi001b74k0buqe52s6	abdulpara5252/pr-reviewer	webhook	failed	0	\nInvalid `this.prisma.pRReview.upsert()` invocation in\n/Users/amici/www/Demo/pr-intelligence/pr-intelligence-backend/src/pr/pr.processor.ts:109:34\n\n  106 githubReviews\n  107   .filter((review) => review.user !== null && review.submitted_at !== null)\n  108   .map((review) =>\n→ 109     this.prisma.pRReview.upsert(\nValue out of range for the type: value "4484571189" is out of range for type integer	2026-06-12 10:28:49.71	2026-06-12 10:28:50.344
+cmqasd015001e74k01z7qztt1	abdulpara5252/pr-reviewer	webhook	failed	0	\nInvalid `this.prisma.pRReview.upsert()` invocation in\n/Users/amici/www/Demo/pr-intelligence/pr-intelligence-backend/src/pr/pr.processor.ts:109:34\n\n  106 githubReviews\n  107   .filter((review) => review.user !== null && review.submitted_at !== null)\n  108   .map((review) =>\n→ 109     this.prisma.pRReview.upsert(\nValue out of range for the type: value "4484571189" is out of range for type integer	2026-06-12 10:30:48.425	2026-06-12 10:30:49.194
+cmqasd4k3001h74k0khf7v2w4	abdulpara5252/pr-reviewer	webhook	failed	0	\nInvalid `this.prisma.pRReview.upsert()` invocation in\n/Users/amici/www/Demo/pr-intelligence/pr-intelligence-backend/src/pr/pr.processor.ts:109:34\n\n  106 githubReviews\n  107   .filter((review) => review.user !== null && review.submitted_at !== null)\n  108   .map((review) =>\n→ 109     this.prisma.pRReview.upsert(\nValue out of range for the type: value "4484571189" is out of range for type integer	2026-06-12 10:30:54.291	2026-06-12 10:30:54.966
+cmqasd5l7001k74k049ebf6lj	abdulpara5252/pr-reviewer	webhook	failed	0	\nInvalid `this.prisma.pRReview.upsert()` invocation in\n/Users/amici/www/Demo/pr-intelligence/pr-intelligence-backend/src/pr/pr.processor.ts:109:34\n\n  106 githubReviews\n  107   .filter((review) => review.user !== null && review.submitted_at !== null)\n  108   .map((review) =>\n→ 109     this.prisma.pRReview.upsert(\nValue out of range for the type: value "4484571189" is out of range for type integer	2026-06-12 10:30:55.627	2026-06-12 10:30:56.158
+cmqasd9vj001n74k0r5imuak2	abdulpara5252/pr-reviewer	webhook	failed	0	\nInvalid `this.prisma.pRReview.upsert()` invocation in\n/Users/amici/www/Demo/pr-intelligence/pr-intelligence-backend/src/pr/pr.processor.ts:109:34\n\n  106 githubReviews\n  107   .filter((review) => review.user !== null && review.submitted_at !== null)\n  108   .map((review) =>\n→ 109     this.prisma.pRReview.upsert(\nValue out of range for the type: value "4484571189" is out of range for type integer	2026-06-12 10:31:01.183	2026-06-12 10:31:01.882
+cmqasdcuh001q74k0ebluxwf1	abdulpara5252/pr-reviewer	webhook	failed	0	\nInvalid `this.prisma.pRReview.upsert()` invocation in\n/Users/amici/www/Demo/pr-intelligence/pr-intelligence-backend/src/pr/pr.processor.ts:109:34\n\n  106 githubReviews\n  107   .filter((review) => review.user !== null && review.submitted_at !== null)\n  108   .map((review) =>\n→ 109     this.prisma.pRReview.upsert(\nValue out of range for the type: value "4484571189" is out of range for type integer	2026-06-12 10:31:05.033	2026-06-12 10:31:05.653
+cmqasdi5l001t74k0b5vfw3la	abdulpara5252/pr-reviewer	webhook	failed	0	\nInvalid `this.prisma.pRReview.upsert()` invocation in\n/Users/amici/www/Demo/pr-intelligence/pr-intelligence-backend/src/pr/pr.processor.ts:109:34\n\n  106 githubReviews\n  107   .filter((review) => review.user !== null && review.submitted_at !== null)\n  108   .map((review) =>\n→ 109     this.prisma.pRReview.upsert(\nValue out of range for the type: value "4484571189" is out of range for type integer	2026-06-12 10:31:11.913	2026-06-12 10:31:12.531
+cmqatikuv001w74k0wbvdg1d3	abdulpara5252/pr-reviewer	webhook	success	1	\N	2026-06-12 11:03:08.312	2026-06-12 11:03:09.503
+cmqatl8sz002074k078t6ieoa	abdulpara5252/pr-reviewer	webhook	success	1	\N	2026-06-12 11:05:12.659	2026-06-12 11:05:13.528
+cmqau05q100008lk0crf7yjdm	abdulpara5252/pr-reviewer	webhook	failed	0	\nInvalid `this.prisma.pRReview.upsert()` invocation in\n/Users/amici/www/Demo/pr-intelligence/pr-intelligence-backend/src/pr/pr.processor.ts:109:34\n\n  106 githubReviews\n  107   .filter((review) => review.user !== null && review.submitted_at !== null)\n  108   .map((review) =>\n→ 109     this.prisma.pRReview.upsert(\nValue out of range for the type: value "4485052892" is out of range for type integer	2026-06-12 11:16:48.505	2026-06-12 11:16:49.287
+cmqau0a7o00068lk0xwg9f3pt	abdulpara5252/pr-reviewer	webhook	failed	0	\nInvalid `this.prisma.pRReview.upsert()` invocation in\n/Users/amici/www/Demo/pr-intelligence/pr-intelligence-backend/src/pr/pr.processor.ts:109:34\n\n  106 githubReviews\n  107   .filter((review) => review.user !== null && review.submitted_at !== null)\n  108   .map((review) =>\n→ 109     this.prisma.pRReview.upsert(\nValue out of range for the type: value "4485052892" is out of range for type integer	2026-06-12 11:16:54.324	2026-06-12 11:16:55.321
+cmqau0iq2000c8lk06a9bt7p1	abdulpara5252/pr-reviewer	webhook	failed	0	\nInvalid `this.prisma.pRReview.upsert()` invocation in\n/Users/amici/www/Demo/pr-intelligence/pr-intelligence-backend/src/pr/pr.processor.ts:109:34\n\n  106 githubReviews\n  107   .filter((review) => review.user !== null && review.submitted_at !== null)\n  108   .map((review) =>\n→ 109     this.prisma.pRReview.upsert(\nValue out of range for the type: value "4485052892" is out of range for type integer	2026-06-12 11:17:05.354	2026-06-12 11:17:06.111
+cmqau1ayu000i8lk0l9vg6zmb	abdulpara5252/pr-reviewer	webhook	failed	0	\nInvalid `this.prisma.pRReview.upsert()` invocation in\n/Users/amici/www/Demo/pr-intelligence/pr-intelligence-backend/src/pr/pr.processor.ts:109:34\n\n  106 githubReviews\n  107   .filter((review) => review.user !== null && review.submitted_at !== null)\n  108   .map((review) =>\n→ 109     this.prisma.pRReview.upsert(\nValue out of range for the type: value "4485052892" is out of range for type integer	2026-06-12 11:17:41.958	2026-06-12 11:17:42.628
+cmqau1feq000o8lk0g1s8en3p	abdulpara5252/pr-reviewer	webhook	failed	0	\nInvalid `this.prisma.pRReview.upsert()` invocation in\n/Users/amici/www/Demo/pr-intelligence/pr-intelligence-backend/src/pr/pr.processor.ts:109:34\n\n  106 githubReviews\n  107   .filter((review) => review.user !== null && review.submitted_at !== null)\n  108   .map((review) =>\n→ 109     this.prisma.pRReview.upsert(\nValue out of range for the type: value "4485052892" is out of range for type integer	2026-06-12 11:17:47.714	2026-06-12 11:17:48.776
+cmqau1o13000u8lk0l36dpk2i	abdulpara5252/pr-reviewer	webhook	failed	0	\nInvalid `this.prisma.pRReview.upsert()` invocation in\n/Users/amici/www/Demo/pr-intelligence/pr-intelligence-backend/src/pr/pr.processor.ts:109:34\n\n  106 githubReviews\n  107   .filter((review) => review.user !== null && review.submitted_at !== null)\n  108   .map((review) =>\n→ 109     this.prisma.pRReview.upsert(\nValue out of range for the type: value "4485052892" is out of range for type integer	2026-06-12 11:17:58.887	2026-06-12 11:17:59.56
+cmqau26r900108lk04rjl28xt	abdulpara5252/pr-reviewer	webhook	failed	0	\nInvalid `this.prisma.pRReview.upsert()` invocation in\n/Users/amici/www/Demo/pr-intelligence/pr-intelligence-backend/src/pr/pr.processor.ts:109:34\n\n  106 githubReviews\n  107   .filter((review) => review.user !== null && review.submitted_at !== null)\n  108   .map((review) =>\n→ 109     this.prisma.pRReview.upsert(\nValue out of range for the type: value "4485052892" is out of range for type integer	2026-06-12 11:18:23.157	2026-06-12 11:18:23.831
+cmqau2b7q00168lk0o5iuo67m	abdulpara5252/pr-reviewer	webhook	failed	0	\nInvalid `this.prisma.pRReview.upsert()` invocation in\n/Users/amici/www/Demo/pr-intelligence/pr-intelligence-backend/src/pr/pr.processor.ts:109:34\n\n  106 githubReviews\n  107   .filter((review) => review.user !== null && review.submitted_at !== null)\n  108   .map((review) =>\n→ 109     this.prisma.pRReview.upsert(\nValue out of range for the type: value "4485052892" is out of range for type integer	2026-06-12 11:18:28.934	2026-06-12 11:18:29.564
+cmqau2jig001c8lk0yp9n753f	abdulpara5252/pr-reviewer	webhook	failed	0	\nInvalid `this.prisma.pRReview.upsert()` invocation in\n/Users/amici/www/Demo/pr-intelligence/pr-intelligence-backend/src/pr/pr.processor.ts:109:34\n\n  106 githubReviews\n  107   .filter((review) => review.user !== null && review.submitted_at !== null)\n  108   .map((review) =>\n→ 109     this.prisma.pRReview.upsert(\nValue out of range for the type: value "4485052892" is out of range for type integer	2026-06-12 11:18:39.689	2026-06-12 11:18:40.319
+cmqau3253001i8lk0hrv9scen	abdulpara5252/pr-reviewer	webhook	failed	0	\nInvalid `this.prisma.pRReview.upsert()` invocation in\n/Users/amici/www/Demo/pr-intelligence/pr-intelligence-backend/src/pr/pr.processor.ts:109:34\n\n  106 githubReviews\n  107   .filter((review) => review.user !== null && review.submitted_at !== null)\n  108   .map((review) =>\n→ 109     this.prisma.pRReview.upsert(\nValue out of range for the type: value "4485052892" is out of range for type integer	2026-06-12 11:19:03.831	2026-06-12 11:19:04.481
+cmqau36kt001o8lk0t3ld26oz	abdulpara5252/pr-reviewer	webhook	failed	0	\nInvalid `this.prisma.pRReview.upsert()` invocation in\n/Users/amici/www/Demo/pr-intelligence/pr-intelligence-backend/src/pr/pr.processor.ts:109:34\n\n  106 githubReviews\n  107   .filter((review) => review.user !== null && review.submitted_at !== null)\n  108   .map((review) =>\n→ 109     this.prisma.pRReview.upsert(\nValue out of range for the type: value "4485052892" is out of range for type integer	2026-06-12 11:19:09.581	2026-06-12 11:19:10.338
+cmqau3ex0001u8lk0kng0k6y6	abdulpara5252/pr-reviewer	webhook	failed	0	\nInvalid `this.prisma.pRReview.upsert()` invocation in\n/Users/amici/www/Demo/pr-intelligence/pr-intelligence-backend/src/pr/pr.processor.ts:109:34\n\n  106 githubReviews\n  107   .filter((review) => review.user !== null && review.submitted_at !== null)\n  108   .map((review) =>\n→ 109     this.prisma.pRReview.upsert(\nValue out of range for the type: value "4485052892" is out of range for type integer	2026-06-12 11:19:20.388	2026-06-12 11:19:21.035
+cmqau67xo00208lk009gngz1q	abdulpara5252/pr-reviewer	webhook	success	1	\N	2026-06-12 11:21:31.308	2026-06-12 11:21:34.113
+cmqaual1b0000vjk0hi4fk5y5	abdulpara5252/pr-reviewer	webhook	success	1	\N	2026-06-12 11:24:54.911	2026-06-12 11:24:55.658
+cmqaub5e20004vjk0niv0hfzo	abdulpara5252/pr-reviewer	webhook	success	1	\N	2026-06-12 11:25:21.29	2026-06-12 11:25:22.025
+cmqaueed50008vjk0311khbuj	abdulpara5252/pr-reviewer	webhook	success	1	\N	2026-06-12 11:27:52.889	2026-06-12 11:27:53.764
+cmqaufmdu000cvjk0ys78wj35	abdulpara5252/pr-reviewer	webhook	success	1	\N	2026-06-12 11:28:49.938	2026-06-12 11:28:50.646
+cmqaugim7000hvjk0e4pojptv	abdulpara5252/pr-reviewer	webhook	success	1	\N	2026-06-12 11:29:31.711	2026-06-12 11:29:34.628
+\.
+
+
+--
+-- TOC entry 3723 (class 2606 OID 26380)
+-- Name: AIInsight AIInsight_pkey; Type: CONSTRAINT; Schema: public; Owner: abdul
+--
+
+ALTER TABLE ONLY public."AIInsight"
+    ADD CONSTRAINT "AIInsight_pkey" PRIMARY KEY (id);
+
+
+--
+-- TOC entry 3721 (class 2606 OID 26371)
+-- Name: Engineer Engineer_pkey; Type: CONSTRAINT; Schema: public; Owner: abdul
+--
+
+ALTER TABLE ONLY public."Engineer"
+    ADD CONSTRAINT "Engineer_pkey" PRIMARY KEY (id);
+
+
+--
+-- TOC entry 3713 (class 2606 OID 26354)
+-- Name: PRMetrics PRMetrics_pkey; Type: CONSTRAINT; Schema: public; Owner: abdul
+--
+
+ALTER TABLE ONLY public."PRMetrics"
+    ADD CONSTRAINT "PRMetrics_pkey" PRIMARY KEY (id);
+
+
+--
+-- TOC entry 3717 (class 2606 OID 26361)
+-- Name: PRReview PRReview_pkey; Type: CONSTRAINT; Schema: public; Owner: abdul
+--
+
+ALTER TABLE ONLY public."PRReview"
+    ADD CONSTRAINT "PRReview_pkey" PRIMARY KEY (id);
+
+
+--
+-- TOC entry 3709 (class 2606 OID 26342)
+-- Name: PullRequest PullRequest_pkey; Type: CONSTRAINT; Schema: public; Owner: abdul
+--
+
+ALTER TABLE ONLY public."PullRequest"
+    ADD CONSTRAINT "PullRequest_pkey" PRIMARY KEY (id);
+
+
+--
+-- TOC entry 3726 (class 2606 OID 26389)
+-- Name: SyncLog SyncLog_pkey; Type: CONSTRAINT; Schema: public; Owner: abdul
+--
+
+ALTER TABLE ONLY public."SyncLog"
+    ADD CONSTRAINT "SyncLog_pkey" PRIMARY KEY (id);
+
+
+--
+-- TOC entry 3724 (class 1259 OID 26398)
+-- Name: AIInsight_prId_key; Type: INDEX; Schema: public; Owner: abdul
+--
+
+CREATE UNIQUE INDEX "AIInsight_prId_key" ON public."AIInsight" USING btree ("prId");
+
+
+--
+-- TOC entry 3719 (class 1259 OID 26397)
+-- Name: Engineer_login_key; Type: INDEX; Schema: public; Owner: abdul
+--
+
+CREATE UNIQUE INDEX "Engineer_login_key" ON public."Engineer" USING btree (login);
+
+
+--
+-- TOC entry 3714 (class 1259 OID 26394)
+-- Name: PRMetrics_prId_key; Type: INDEX; Schema: public; Owner: abdul
+--
+
+CREATE UNIQUE INDEX "PRMetrics_prId_key" ON public."PRMetrics" USING btree ("prId");
+
+
+--
+-- TOC entry 3715 (class 1259 OID 26416)
+-- Name: PRReview_externalId_prId_key; Type: INDEX; Schema: public; Owner: abdul
+--
+
+CREATE UNIQUE INDEX "PRReview_externalId_prId_key" ON public."PRReview" USING btree ("externalId", "prId");
+
+
+--
+-- TOC entry 3718 (class 1259 OID 26395)
+-- Name: PRReview_reviewerLogin_idx; Type: INDEX; Schema: public; Owner: abdul
+--
+
+CREATE INDEX "PRReview_reviewerLogin_idx" ON public."PRReview" USING btree ("reviewerLogin");
+
+
+--
+-- TOC entry 3706 (class 1259 OID 26390)
+-- Name: PullRequest_authorLogin_idx; Type: INDEX; Schema: public; Owner: abdul
+--
+
+CREATE INDEX "PullRequest_authorLogin_idx" ON public."PullRequest" USING btree ("authorLogin");
+
+
+--
+-- TOC entry 3707 (class 1259 OID 26393)
+-- Name: PullRequest_externalId_repoFullName_key; Type: INDEX; Schema: public; Owner: abdul
+--
+
+CREATE UNIQUE INDEX "PullRequest_externalId_repoFullName_key" ON public."PullRequest" USING btree ("externalId", "repoFullName");
+
+
+--
+-- TOC entry 3710 (class 1259 OID 26392)
+-- Name: PullRequest_repoFullName_idx; Type: INDEX; Schema: public; Owner: abdul
+--
+
+CREATE INDEX "PullRequest_repoFullName_idx" ON public."PullRequest" USING btree ("repoFullName");
+
+
+--
+-- TOC entry 3711 (class 1259 OID 26391)
+-- Name: PullRequest_state_idx; Type: INDEX; Schema: public; Owner: abdul
+--
+
+CREATE INDEX "PullRequest_state_idx" ON public."PullRequest" USING btree (state);
+
+
+--
+-- TOC entry 3729 (class 2606 OID 26409)
+-- Name: AIInsight AIInsight_prId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: abdul
+--
+
+ALTER TABLE ONLY public."AIInsight"
+    ADD CONSTRAINT "AIInsight_prId_fkey" FOREIGN KEY ("prId") REFERENCES public."PullRequest"(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- TOC entry 3727 (class 2606 OID 26399)
+-- Name: PRMetrics PRMetrics_prId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: abdul
+--
+
+ALTER TABLE ONLY public."PRMetrics"
+    ADD CONSTRAINT "PRMetrics_prId_fkey" FOREIGN KEY ("prId") REFERENCES public."PullRequest"(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- TOC entry 3728 (class 2606 OID 26404)
+-- Name: PRReview PRReview_prId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: abdul
+--
+
+ALTER TABLE ONLY public."PRReview"
+    ADD CONSTRAINT "PRReview_prId_fkey" FOREIGN KEY ("prId") REFERENCES public."PullRequest"(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+-- Completed on 2026-06-12 18:17:40 IST
+
+--
+-- PostgreSQL database dump complete
+--
+
+\unrestrict 1Lzd5lfeGDjQaU8UihTVdibuMMMjvQmDlxjkvFfhfuzJbgVb7XPRadPVX8d9dcX
+
